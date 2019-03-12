@@ -5,10 +5,31 @@ import registerServiceWorker from "./registerServiceWorker";
 
 import App from "./App";
 
+import { compose, applyMiddleware, createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+
+import authorsReducer from "./store/reducers/authors";
+import authorReducer from "./store/reducers/author";
+import thunk from "redux-thunk";
+
+const rootReducer = combineReducers({
+  rootAuthors: authorsReducer,
+  rootAuthor: authorReducer
+});
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(
+  rootReducer,
+  composeEnhancers(applyMiddleware(thunk))
+);
+
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
 registerServiceWorker();
